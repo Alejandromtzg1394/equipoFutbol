@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+             version="3.2">
+
+    <persistence-unit name="TorneoFutbolPU" transaction-type="RESOURCE_LOCAL">
+
+
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+
+
+        <properties>
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect" />
+            <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.user" value="admin"/>
+            <property name="jakarta.persistence.jdbc.password" value="admin123"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/torneo_futbol"/>
+
+            <!-- ✅ Cambiar a "update" para desarrollo (crea/actualiza tablas automáticamente) -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="update"/>
+
+            <!-- ✅ Opcional: Formatear SQL para mejor legibilidad -->
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>
