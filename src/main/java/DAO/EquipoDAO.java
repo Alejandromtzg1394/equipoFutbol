@@ -22,13 +22,6 @@ public class EquipoDAO {
         }
     }
 
-    public Equipo buscarPorId(Long id) {
-        try {
-            return entityManager.find(Equipo.class, id);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar equipo por ID: " + e.getMessage(), e);
-        }
-    }
 
     public List<Equipo> listarTodos() {
         try {
@@ -59,35 +52,5 @@ public class EquipoDAO {
         }
     }
 
-    public List<Equipo> buscarPorNombre(String nombre) {
-        try {
-            TypedQuery<Equipo> query = entityManager.createQuery(
-                    "SELECT e FROM Equipo e WHERE e.nombre LIKE :nombre ORDER BY e.nombre", Equipo.class);
-            query.setParameter("nombre", "%" + nombre + "%");
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar equipos por nombre: " + e.getMessage(), e);
-        }
-    }
 
-    public boolean existePorNombre(String nombre) {
-        try {
-            TypedQuery<Long> query = entityManager.createQuery(
-                    "SELECT COUNT(e) FROM Equipo e WHERE e.nombre = :nombre", Long.class);
-            query.setParameter("nombre", nombre);
-            return query.getSingleResult() > 0;
-        } catch (Exception e) {
-            throw new RuntimeException("Error al verificar existencia de equipo: " + e.getMessage(), e);
-        }
-    }
-
-    public Long contarTotal() {
-        try {
-            TypedQuery<Long> query = entityManager.createQuery(
-                    "SELECT COUNT(e) FROM Equipo e", Long.class);
-            return query.getSingleResult();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al contar equipos: " + e.getMessage(), e);
-        }
-    }
 }

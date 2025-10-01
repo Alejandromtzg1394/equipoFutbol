@@ -72,8 +72,9 @@ public class inicio extends JFrame {
             jugadorService = new JugadorServiceImpl(em);
             partidoService = new PartidoServiceImpl(em);
             golService = new GolServiceImpl(em);
-            posicionService = new PosicionServiceImpl(em); // <-- inicializar aquí
+            posicionService = new PosicionServiceImpl(em);
 
+        //Conexion a la base de datos
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error al conectar con la base de datos: " + e.getMessage(),
@@ -430,6 +431,9 @@ public class inicio extends JFrame {
 
     // ----------------> PANEL GOLES <----------------
     private JPanel crearPanelGoles() {
+
+
+
         JPanel panel = new JPanel(new BorderLayout(10,10));
         panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
@@ -518,6 +522,8 @@ public class inicio extends JFrame {
 
     // ---------------- PANEL DE PARTIDOS ----------------
     private JPanel crearPanelPartidos() {
+
+
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

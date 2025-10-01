@@ -24,14 +24,6 @@ public class GolDAO {
         }
     }
 
-    public Gol buscarPorId(Long id) {
-        try {
-            return entityManager.find(Gol.class, id);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar gol por ID: " + e.getMessage(), e);
-        }
-    }
-
     public List<Gol> listarTodos() {
         try {
             TypedQuery<Gol> query = entityManager.createQuery(
@@ -39,14 +31,6 @@ public class GolDAO {
             return query.getResultList();
         } catch (Exception e) {
             throw new RuntimeException("Error al listar goles: " + e.getMessage(), e);
-        }
-    }
-
-    public Gol actualizar(Gol gol) {
-        try {
-            return entityManager.merge(gol);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar el gol: " + e.getMessage(), e);
         }
     }
 
@@ -61,68 +45,4 @@ public class GolDAO {
         }
     }
 
-    public List<Gol> buscarPorPartido(Partido partido) {
-        try {
-            TypedQuery<Gol> query = entityManager.createQuery(
-                    "SELECT g FROM Gol g WHERE g.partido = :partido ORDER BY g.minuto", Gol.class);
-            query.setParameter("partido", partido);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar goles por partido: " + e.getMessage(), e);
-        }
-    }
-
-    public List<Gol> buscarPorJugador(Jugador jugador) {
-        try {
-            TypedQuery<Gol> query = entityManager.createQuery(
-                    "SELECT g FROM Gol g WHERE g.jugador = :jugador ORDER BY g.partido.fechaPartido DESC", Gol.class);
-            query.setParameter("jugador", jugador);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar goles por jugador: " + e.getMessage(), e);
-        }
-    }
-
-    public Long contarGolesPorJugador(Jugador jugador) {
-        try {
-            TypedQuery<Long> query = entityManager.createQuery(
-                    "SELECT COUNT(g) FROM Gol g WHERE g.jugador = :jugador", Long.class);
-            query.setParameter("jugador", jugador);
-            return query.getSingleResult();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al contar goles por jugador: " + e.getMessage(), e);
-        }
-    }
-
-    public Long contarGolesPorPartido(Partido partido) {
-        try {
-            TypedQuery<Long> query = entityManager.createQuery(
-                    "SELECT COUNT(g) FROM Gol g WHERE g.partido = :partido", Long.class);
-            query.setParameter("partido", partido);
-            return query.getSingleResult();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al contar goles por partido: " + e.getMessage(), e);
-        }
-    }
-
-    public List<Object[]> obtenerGoleadores() {
-        try {
-            TypedQuery<Object[]> query = entityManager.createQuery(
-                    "SELECT g.jugador, COUNT(g) FROM Gol g GROUP BY g.jugador ORDER BY COUNT(g) DESC", Object[].class);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al obtener goleadores: " + e.getMessage(), e);
-        }
-    }
-
-    public List<Gol> buscarPorMinuto(int minuto) {
-        try {
-            TypedQuery<Gol> query = entityManager.createQuery(
-                    "SELECT g FROM Gol g WHERE g.minuto = :minuto ORDER BY g.partido.fechaPartido DESC", Gol.class);
-            query.setParameter("minuto", minuto);
-            return query.getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException("Error al buscar goles por minuto: " + e.getMessage(), e);
-        }
-    }
 }

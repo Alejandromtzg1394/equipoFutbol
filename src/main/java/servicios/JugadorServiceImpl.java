@@ -18,7 +18,6 @@ public class JugadorServiceImpl implements JugadorService {
         this.entityManager = entityManager;
         this.jugadorDAO = new JugadorDAO(entityManager);
     }
-
     @Override
     public Jugador guardarJugador(Jugador jugador) {
         try {
@@ -35,16 +34,11 @@ public class JugadorServiceImpl implements JugadorService {
     }
 
     @Override
-    public Jugador buscarJugadorPorId(Long id) {
-        return jugadorDAO.buscarPorId(id);
-    }
-
-    @Override
     public List<Jugador> listarTodosJugadores() {
         return jugadorDAO.listarTodos();
     }
 
-    // Service
+    // Revisar Esta eliminarcion
     @Override
     public void eliminarJugador(Long id) {
         EntityTransaction tx = entityManager.getTransaction();
@@ -56,46 +50,5 @@ public class JugadorServiceImpl implements JugadorService {
             if (tx.isActive()) tx.rollback();
             throw new RuntimeException("Error al eliminar jugador: " + e.getMessage(), e);
         }
-    }
-
-
-    @Override
-    public Jugador actualizarJugador(Jugador jugador) {
-        try {
-            entityManager.getTransaction().begin();
-            Jugador jugadorActualizado = jugadorDAO.actualizar(jugador);
-            entityManager.getTransaction().commit();
-            return jugadorActualizado;
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw new RuntimeException("Error al actualizar jugador: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<Jugador> buscarJugadoresPorNombre(String nombre) {
-        return jugadorDAO.buscarPorNombre(nombre);
-    }
-
-    @Override
-    public List<Jugador> buscarJugadoresPorEquipo(Equipo equipo) {
-        return jugadorDAO.buscarPorEquipo(equipo);
-    }
-
-    @Override
-    public List<Jugador> buscarJugadoresPorPosicion(Posicion posicion) {
-        return jugadorDAO.buscarPorPosicion(posicion);
-    }
-
-    @Override
-    public Long contarJugadoresPorEquipo(Equipo equipo) {
-        return jugadorDAO.contarPorEquipo(equipo);
-    }
-
-    @Override
-    public List<Jugador> buscarJugadoresSinEquipo() {
-        return jugadorDAO.buscarJugadoresSinEquipo();
     }
 }

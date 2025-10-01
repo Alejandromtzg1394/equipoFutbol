@@ -30,10 +30,6 @@ public class EquipoServiceImpl implements EquipoService {
         }
     }
 
-    @Override
-    public Equipo buscarEquipoPorId(Long id) {
-        return equipoDAO.buscarPorId(id);
-    }
 
     @Override
     public List<Equipo> listarTodosEquipos() {
@@ -69,21 +65,6 @@ public class EquipoServiceImpl implements EquipoService {
         }
     }
 
-
-    @Override
-    public List<Equipo> buscarEquiposPorNombre(String nombre) {
-        return equipoDAO.buscarPorNombre(nombre);
-    }
-
-    @Override
-    public boolean existeEquipoConNombre(String nombre) {
-        return equipoDAO.existePorNombre(nombre);
-    }
-
-    @Override
-    public Long obtenerTotalEquipos() {
-        return equipoDAO.contarTotal();
-    }
 
 
 }

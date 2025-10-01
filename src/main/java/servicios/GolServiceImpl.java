@@ -33,11 +33,6 @@ public class GolServiceImpl implements GolService {
     }
 
     @Override
-    public Gol buscarGolPorId(Long id) {
-        return golDAO.buscarPorId(id);
-    }
-
-    @Override
     public List<Gol> listarTodosGoles() {
         return golDAO.listarTodos();
     }
@@ -56,48 +51,5 @@ public class GolServiceImpl implements GolService {
         }
     }
 
-    @Override
-    public Gol actualizarGol(Gol gol) {
-        try {
-            entityManager.getTransaction().begin();
-            Gol golActualizado = golDAO.actualizar(gol);
-            entityManager.getTransaction().commit();
-            return golActualizado;
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw new RuntimeException("Error al actualizar gol: " + e.getMessage(), e);
-        }
-    }
 
-    @Override
-    public List<Gol> buscarGolesPorPartido(Partido partido) {
-        return golDAO.buscarPorPartido(partido);
-    }
-
-    @Override
-    public List<Gol> buscarGolesPorJugador(Jugador jugador) {
-        return golDAO.buscarPorJugador(jugador);
-    }
-
-    @Override
-    public Long contarGolesPorJugador(Jugador jugador) {
-        return golDAO.contarGolesPorJugador(jugador);
-    }
-
-    @Override
-    public Long contarGolesPorPartido(Partido partido) {
-        return golDAO.contarGolesPorPartido(partido);
-    }
-
-    @Override
-    public List<Object[]> obtenerGoleadores() {
-        return golDAO.obtenerGoleadores();
-    }
-
-    @Override
-    public List<Gol> buscarGolesPorMinuto(int minuto) {
-        return golDAO.buscarPorMinuto(minuto);
-    }
 }

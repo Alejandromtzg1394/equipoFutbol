@@ -33,11 +33,6 @@ public class PartidoServiceImpl implements PartidoService {
     }
 
     @Override
-    public Partido buscarPartidoPorId(Long id) {
-        return partidoDAO.buscarPorId(id);
-    }
-
-    @Override
     public List<Partido> listarTodosPartidos() {
         return partidoDAO.listarTodos();
     }
@@ -54,45 +49,5 @@ public class PartidoServiceImpl implements PartidoService {
             }
             throw new RuntimeException("Error al eliminar partido: " + e.getMessage(), e);
         }
-    }
-
-    @Override
-    public Partido actualizarPartido(Partido partido) {
-        try {
-            entityManager.getTransaction().begin();
-            Partido partidoActualizado = partidoDAO.actualizar(partido);
-            entityManager.getTransaction().commit();
-            return partidoActualizado;
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw new RuntimeException("Error al actualizar partido: " + e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<Partido> buscarPartidosPorEquipo(Equipo equipo) {
-        return partidoDAO.buscarPorEquipo(equipo);
-    }
-
-    @Override
-    public List<Partido> buscarPartidosPorFecha(LocalDate fecha) {
-        return partidoDAO.buscarPorFecha(fecha);
-    }
-
-    @Override
-    public List<Partido> buscarPartidosPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        return partidoDAO.buscarPorRangoFechas(fechaInicio, fechaFin);
-    }
-
-    @Override
-    public Long contarPartidosJugados() {
-        return partidoDAO.contarPartidosJugados();
-    }
-
-    @Override
-    public List<Partido> buscarPartidosConGoles() {
-        return partidoDAO.buscarPartidosConGoles();
     }
 }
