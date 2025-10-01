@@ -41,7 +41,11 @@ public class inicio extends JFrame {
     private JComboBox<Equipo> cmbEquipoVisitante;
 
 
-    //La lista que uso para las posiciones
+    // ---- Atributos globales para GOLES ----
+    private JComboBox<Partido> cmbPartidosGoles;
+    private JComboBox<Jugador> cmbJugadoresGoles;
+
+
     private List<Posicion> listaPosiciones = new ArrayList<>();
 
     public static void main(String[] args){
@@ -96,7 +100,13 @@ public class inicio extends JFrame {
         tabbedPane1.addTab("Jugadores", crearPanelJugadores());
         tabbedPane1.addTab("Partidos", crearPanelPartidos());
         tabbedPane1.addTab("Goles", crearPanelGoles());
+
+        // 👉 Aquí agregas el listener que se dispara al cambiar de pestaña
+        tabbedPane1.addChangeListener(e -> cargarCombos());
     }
+
+
+
 
     // ----------------> INICIO <----------------
     private JPanel crearPanelInicio() {
@@ -428,21 +438,19 @@ public class inicio extends JFrame {
         }
     }
 
-
     // ----------------> PANEL GOLES <----------------
     private JPanel crearPanelGoles() {
-
-
 
         JPanel panel = new JPanel(new BorderLayout(10,10));
         panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         JPanel formulario = new JPanel(new GridLayout(3,2,10,10));
-        JComboBox<Partido> cmbPartidos = new JComboBox<>();
-        JComboBox<Jugador> cmbJugadores = new JComboBox<>();
+        cmbPartidosGoles = new JComboBox<>();
+        cmbJugadoresGoles = new JComboBox<>();
         JTextField txtMinuto = new JTextField();
-        formulario.add(new JLabel("Partido:")); formulario.add(cmbPartidos);
-        formulario.add(new JLabel("Jugador:")); formulario.add(cmbJugadores);
+
+        formulario.add(new JLabel("Partido:")); formulario.add(cmbPartidosGoles);
+        formulario.add(new JLabel("Jugador:")); formulario.add(cmbJugadoresGoles);
         formulario.add(new JLabel("Minuto:")); formulario.add(txtMinuto);
 
         JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -459,29 +467,48 @@ public class inicio extends JFrame {
         JTable tablaGoles = new JTable(modeloGoles);
         JScrollPane scroll = new JScrollPane(tablaGoles);
 
+        // ---- BOTONES ----
         btnAgregar.addActionListener(e -> {
-            Partido partido = (Partido) cmbPartidos.getSelectedItem();
-            Jugador jugador = (Jugador) cmbJugadores.getSelectedItem();
+            Partido partido = (Partido) cmbPartidosGoles.getSelectedItem();
+            Jugador jugador = (Jugador) cmbJugadoresGoles.getSelectedItem();
             String strMinuto = txtMinuto.getText().trim();
-            if(partido==null || jugador==null || strMinuto.isEmpty()){ JOptionPane.showMessageDialog(this,"Complete todos los campos"); return;}
+            if(partido==null || jugador==null || strMinuto.isEmpty()){
+                JOptionPane.showMessageDialog(this,"Complete todos los campos");
+                return;
+            }
             try{
                 int minuto = Integer.parseInt(strMinuto);
-                Gol gol = new Gol(); gol.setPartido(partido); gol.setJugador(jugador); gol.setMinuto(minuto);
-                golService.guardarGol(gol); txtMinuto.setText(""); actualizarListaGoles(modeloGoles);
-            }catch(NumberFormatException ex){ JOptionPane.showMessageDialog(this,"El minuto debe ser un número entero");}
-            catch(Exception ex){ JOptionPane.showMessageDialog(this,"Error al agregar gol: "+ex.getMessage());}
+                Gol gol = new Gol();
+                gol.setPartido(partido);
+                gol.setJugador(jugador);
+                gol.setMinuto(minuto);
+                golService.guardarGol(gol);
+                txtMinuto.setText("");
+                actualizarListaGoles(modeloGoles);
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(this,"El minuto debe ser un número entero");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this,"Error al agregar gol: "+ex.getMessage());
+            }
         });
 
         btnActualizar.addActionListener(e -> actualizarListaGoles(modeloGoles));
 
         btnEliminar.addActionListener(e -> {
             int filaSeleccionada = tablaGoles.getSelectedRow();
-            if(filaSeleccionada==-1){ JOptionPane.showMessageDialog(this,"Seleccione un gol"); return;}
+            if(filaSeleccionada==-1){
+                JOptionPane.showMessageDialog(this,"Seleccione un gol");
+                return;
+            }
             Long idGol = (Long) modeloGoles.getValueAt(filaSeleccionada,0);
             int confirm = JOptionPane.showConfirmDialog(this,"Eliminar gol","Confirmar",JOptionPane.YES_NO_OPTION);
             if(confirm==JOptionPane.YES_OPTION){
-                try{ golService.eliminarGol(idGol); actualizarListaGoles(modeloGoles);}
-                catch(Exception ex){ JOptionPane.showMessageDialog(this,"Error al eliminar gol: "+ex.getMessage());}
+                try{
+                    golService.eliminarGol(idGol);
+                    actualizarListaGoles(modeloGoles);
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(this,"Error al eliminar gol: "+ex.getMessage());
+                }
             }
         });
 
@@ -489,12 +516,12 @@ public class inicio extends JFrame {
         panel.add(toolbar, BorderLayout.CENTER);
         panel.add(scroll, BorderLayout.SOUTH);
 
-        actualizarCombosGoles(cmbPartidos,cmbJugadores);
         actualizarListaGoles(modeloGoles);
 
         return panel;
     }
 
+    // ---- Actualiza la tabla de goles ----
     private void actualizarListaGoles(DefaultTableModel modelo){
         modelo.setRowCount(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -512,17 +539,9 @@ public class inicio extends JFrame {
         }
     }
 
-    private void actualizarCombosGoles(JComboBox<Partido> cmbPartidos, JComboBox<Jugador> cmbJugadores){
-        cmbPartidos.removeAllItems();
-        cmbJugadores.removeAllItems();
-        for(Partido p: partidoService.listarTodosPartidos()){ cmbPartidos.addItem(p); }
-        for(Jugador j: jugadorService.listarTodosJugadores()){ cmbJugadores.addItem(j); }
-    }
-
 
     // ---------------- PANEL DE PARTIDOS ----------------
     private JPanel crearPanelPartidos() {
-
 
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -559,7 +578,7 @@ public class inicio extends JFrame {
         JTable tablaPartidos = new JTable(modeloPartidos);
         JScrollPane scroll = new JScrollPane(tablaPartidos);
 
-        // Acciones botones
+        // ---- BOTONES ----
         btnAgregar.addActionListener(e -> {
             Equipo local = (Equipo) cmbEquipoLocal.getSelectedItem();
             Equipo visitante = (Equipo) cmbEquipoVisitante.getSelectedItem();
@@ -606,19 +625,16 @@ public class inicio extends JFrame {
             }
         });
 
-        // Agregar componentes al panel principal
         panel.add(formulario, BorderLayout.NORTH);
         panel.add(toolbar, BorderLayout.CENTER);
         panel.add(scroll, BorderLayout.SOUTH);
 
-        // Inicializar combos y lista
-        actualizarCombosPartidos();
         actualizarListaPartidos(modeloPartidos);
 
         return panel;
     }
 
-    // Actualiza la tabla de partidos
+    // ---- Actualiza la tabla de partidos ----
     private void actualizarListaPartidos(DefaultTableModel modelo) {
         modelo.setRowCount(0);
         List<Partido> partidos = partidoService.listarTodosPartidos();
@@ -633,16 +649,44 @@ public class inicio extends JFrame {
         }
     }
 
-    // Inicializa los combos de partidos
-    private void actualizarCombosPartidos() {
+    // ---- Metodo global para recargar combos ----
+    private void cargarCombos() {
+        // ---- Equipos en jugadores ----
+        cmbEquiposJugadores.removeAllItems();
+        for (Equipo e : equipoService.listarTodosEquipos()) {
+            cmbEquiposJugadores.addItem(e.getNombre());
+        }
+
+        // ---- Posiciones ----
+        cmbPosiciones.removeAllItems();
+        listaPosiciones = posicionService.listarTodasPosiciones();
+        for (Posicion p : listaPosiciones) {
+            cmbPosiciones.addItem(p.getNombre());
+        }
+
+        // ---- Equipos en partidos ----
         cmbEquipoLocal.removeAllItems();
         cmbEquipoVisitante.removeAllItems();
-
         for (Equipo e : equipoService.listarTodosEquipos()) {
             cmbEquipoLocal.addItem(e);
             cmbEquipoVisitante.addItem(e);
         }
+
+        // ---- Partidos en goles ----
+        cmbPartidosGoles.removeAllItems();
+        for (Partido p : partidoService.listarTodosPartidos()) {
+            cmbPartidosGoles.addItem(p);
+        }
+
+        // ---- Jugadores en goles ----
+        cmbJugadoresGoles.removeAllItems();
+        for (Jugador j : jugadorService.listarTodosJugadores()) {
+            cmbJugadoresGoles.addItem(j);
+        }
     }
+
+
+
 
 
     @Override
