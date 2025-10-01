@@ -33,14 +33,6 @@ public class EquipoDAO {
         }
     }
 
-    public Equipo actualizar(Equipo equipo) {
-        try {
-            return entityManager.merge(equipo);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar el equipo: " + e.getMessage(), e);
-        }
-    }
-
     public void eliminar(Long id) {
         try {
             Equipo equipo = entityManager.find(Equipo.class, id);

@@ -50,21 +50,5 @@ public class EquipoServiceImpl implements EquipoService {
         }
     }
 
-    @Override
-    public Equipo actualizarEquipo(Equipo equipo) {
-        try {
-            entityManager.getTransaction().begin();
-            Equipo equipoActualizado = equipoDAO.actualizar(equipo);
-            entityManager.getTransaction().commit();
-            return equipoActualizado;
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            throw new RuntimeException("Error al actualizar equipo: " + e.getMessage(), e);
-        }
-    }
-
-
 
 }
