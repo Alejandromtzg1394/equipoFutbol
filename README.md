@@ -1,0 +1,1 @@
+Sistema de gestión de torneos de fútbol desarrollado en Java con mapeo objeto-relacional JPA. Arquitectura multicapa con interfaces de servicio. Funcionalidades: CRUD equipos/jugadores, registro de partidos, gestión de goles, asignación de roles. Incluye diagrama Entidad-Relación y diagrama de clases completos.
